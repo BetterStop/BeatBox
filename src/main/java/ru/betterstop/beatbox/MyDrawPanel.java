@@ -1,40 +1,41 @@
 package ru.betterstop.beatbox;
 
+import javax.sound.midi.ControllerEventListener;
+import javax.sound.midi.ShortMessage;
 import javax.swing.*;
 import java.awt.*;
 
-public class MyDrawPanel extends JPanel {
+public class MyDrawPanel extends JPanel implements ControllerEventListener {
+
+    boolean msg = false;
+
     public void paintComponent(Graphics graphics){
         Graphics2D g2d = (Graphics2D) graphics;
+        if (msg) {
+            int red = (int) (Math.random() * 255);
+            int green = (int) (Math.random() * 255);
+            int blue = (int) (Math.random() * 255);
+            Color randomColor = new Color(red, green, blue);
+            g2d.setColor(randomColor);
 
-        int red = (int) (Math.random() * 255);
-        int green = (int) (Math.random() * 255);
-        int blue = (int) (Math.random() * 255);
-        Color randomColor1 = new Color(red, green, blue);
+            g2d.fill3DRect((int) (Math.random()* 40) + 100, (int) (Math.random()* 40) + 100, (int) (Math.random()* 120) + 10, (int) (Math.random()* 120) + 10, true);
 
-        red = (int) (Math.random() * 255);
-        green = (int) (Math.random() * 255);
-        blue = (int) (Math.random() * 255);
-        Color randomColor2 = new Color(red, green, blue);
+            msg =false;
+        }
 
+        g2d.setColor(Color.WHITE);
+        g2d.fillOval(BeatBox.x-BeatBox.xx, BeatBox.y-BeatBox.yy, 20, 20);
 
-        GradientPaint gradientPaint = new GradientPaint(70, 70, randomColor1, 150,150, randomColor2);
-
-        g2d.setPaint(gradientPaint);
-        g2d.fillOval(300, 50, 100, 100);
-        g2d.fillRect(20,50,120,120);
-        g2d.setPaint(gradientPaint);
+        g2d.setColor(BeatBox.colorOval);
+        g2d.fillOval(BeatBox.x, BeatBox.y, 20, 20);
 
 
-        red = (int) (Math.random() * 255);
-        green = (int) (Math.random() * 255);
-        blue = (int) (Math.random() * 255);
+    }
 
-        Color randomColor = new Color(red, green, blue);
-        graphics.setColor(randomColor);
-        graphics.fillOval(50, 200, 100, 100);
-
-        g2d.fill3DRect(150, 50, 100, 100, true);
-
+    @Override
+    public void controlChange(ShortMessage event) {
+        msg = true;
+        //System.out.println("````````````````````````````````");
+        //repaint();
     }
 }
