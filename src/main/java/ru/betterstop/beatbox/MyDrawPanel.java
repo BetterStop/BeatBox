@@ -10,8 +10,10 @@ public class MyDrawPanel extends JPanel implements ControllerEventListener {
     boolean msg = false;
 
     public void paintComponent(Graphics graphics){
-        Graphics2D g2d = (Graphics2D) graphics;
+
         if (msg) {
+            repaint();
+            Graphics2D g2d = (Graphics2D) graphics;
             int red = (int) (Math.random() * 255);
             int green = (int) (Math.random() * 255);
             int blue = (int) (Math.random() * 255);
@@ -23,11 +25,11 @@ public class MyDrawPanel extends JPanel implements ControllerEventListener {
             msg =false;
         }
 
-        g2d.setColor(Color.WHITE);
-        g2d.fillOval(BeatBox.x-BeatBox.xx, BeatBox.y-BeatBox.yy, 20, 20);
-
-        g2d.setColor(BeatBox.colorOval);
-        g2d.fillOval(BeatBox.x, BeatBox.y, 20, 20);
+//        g2d.setColor(Color.WHITE);
+//        g2d.fillOval(BeatBox.x-BeatBox.xx, BeatBox.y-BeatBox.yy, 20, 20);
+//
+//        g2d.setColor(BeatBox.colorOval);
+//        g2d.fillOval(BeatBox.x, BeatBox.y, 20, 20);
 
 
     }
