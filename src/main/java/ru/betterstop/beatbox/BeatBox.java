@@ -8,12 +8,8 @@ import java.awt.event.ActionListener;
 public class BeatBox {
     static MyDrawPanel myDrawPanel = new MyDrawPanel();
     JFrame jFrame = new JFrame("Музыкальный калейдоскоп");;
-    JLabel jLabel;
     static Color colorOval = Color.BLACK;
-    static int x = 50;
-    static int y = 50;
-    static int xx = 3;
-    static int yy = 3;
+
 
     public static void main(String[] args) {
         BeatBox beatBox = new BeatBox();
@@ -49,8 +45,6 @@ public class BeatBox {
                 field.setText("");
         });
 
-
-
         jPanel.setBackground(Color.DARK_GRAY);
         jFrame.getContentPane().add(BorderLayout.EAST, jPanel);
 
@@ -61,24 +55,6 @@ public class BeatBox {
         jFrame.getContentPane().add(BorderLayout.CENTER, drawPanel);
 
         jFrame.setVisible(true);
-
-//        while(true){
-//            if (x > jFrame.getWidth()-120) xx = -3;
-//            if (x < 5) xx = 3;
-//            if (y > jFrame.getHeight()-120) yy = -3;
-//            if (y < 5) yy = 3;
-//
-//            x += xx;
-//            y += yy;
-
-           // myDrawPanel.repaint();
-//            try {
-//                Thread.sleep(10);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-           // myDrawPanel.repaint();
-    //    }
     }
 
     static class ColorListener implements ActionListener{
@@ -88,9 +64,6 @@ public class BeatBox {
             int green = (int) (Math.random() * 255);
             int blue = (int) (Math.random() * 255);
             colorOval = new Color(red, green, blue);
-
-            //myDrawPanel.repaint();
-          //  jLabel.setText("Сменили цвет");
         }
     }
 
@@ -98,8 +71,6 @@ public class BeatBox {
         @Override
         public void actionPerformed(ActionEvent e) {
             MidiPlayer.play();
-            //myDrawPanel.repaint();
-           // jLabel.setText("БИП");
         }
     }
 
