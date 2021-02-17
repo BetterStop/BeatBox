@@ -30,7 +30,7 @@ public class BeatBox {
         buttonBeep.addActionListener(new BeatBox.BeepListener());
         jPanel.add(BorderLayout.EAST, buttonBeep);
 
-        JTextArea fielCopy = new JTextArea(10, 20);
+        JTextArea fielCopy = new JTextArea(10, 28);
         JScrollPane scrollPane = new JScrollPane(fielCopy);
         fielCopy.setLineWrap(true);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -42,6 +42,15 @@ public class BeatBox {
                 fielCopy.append(field.getText() + "\n");
                 field.setText("");
         });
+        JCheckBox checkBox = new JCheckBox("Выделить");
+        checkBox.addActionListener(action -> {
+            if (checkBox.isSelected()) {
+                fielCopy.requestFocus();
+                fielCopy.selectAll();
+            } else field.requestFocus();
+        });
+        
+
 
         jPanel.setBackground(Color.DARK_GRAY);
         jFrame.getContentPane().add(BorderLayout.EAST, jPanel);
@@ -49,6 +58,7 @@ public class BeatBox {
         JPanel drawPanel = new JPanel();
         drawPanel.setBackground(Color.GRAY);
         drawPanel.add(field);
+        drawPanel.add(checkBox);
         drawPanel.add(scrollPane);
         jFrame.getContentPane().add(BorderLayout.CENTER, drawPanel);
 
