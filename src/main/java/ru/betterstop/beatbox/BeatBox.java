@@ -16,7 +16,6 @@ public class BeatBox {
         beatBox.go();
     }
 
-
     public void go() {
         JPanel jPanel = new JPanel();
 
@@ -36,7 +35,6 @@ public class BeatBox {
         fielCopy.setLineWrap(true);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
 
         JTextField field = new JTextField(21);
 
@@ -73,5 +71,4 @@ public class BeatBox {
             MidiPlayer.play();
         }
     }
-
 }
