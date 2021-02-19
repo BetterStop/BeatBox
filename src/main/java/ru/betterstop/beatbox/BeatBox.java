@@ -43,13 +43,13 @@ public class BeatBox {
 
         JButton start = new JButton("Start");
         start.addActionListener(listener -> {
-            System.out.println("Start");
+            buildTrackAndStart();
         });
         buttonBox.add(start);
 
         JButton stop = new JButton("Stop");
         stop.addActionListener(listener -> {
-            System.out.println("Stop");
+            sequencer.stop();
         });
         buttonBox.add(stop);
 
@@ -104,6 +104,57 @@ public class BeatBox {
             e.printStackTrace();
         }
     }
+
+    public void buildTrackAndStart() {
+        int[] trackList = null;
+
+        sequence.deleteTrack(track);
+        track = sequence.createTrack();
+
+        for (int i = 0; i < 16; i++) {
+            trackList = new int[16];
+            int key = instruments[i];
+
+            for (int j = 0; j < 16; j++) {
+                JCheckBox checkBox = checkBoxList.get(j + (16 * i));
+                if (checkBox.isSelected()) trackList[j] = key;
+                else trackList[j] = 0;
+            }
+            makeTracks(trackList);
+        }
+        track.add(makeEvent(192, 9, 1, 0, 15));
+        try {
+            sequencer.setSequence(sequence);
+            sequencer.setLoopCount(sequencer.LOOP_CONTINUOUSLY);
+            sequencer.start();
+            sequencer.setTempoInBPM(120);
+        } catch(Exception e) {e.printStackTrace();}
+    }
+
+    public void makeTracks(int[] list) {
+        for (int i = 0; i < 16; i++) {
+            int key = list[i];
+            if (key != 0) {
+                track.add(makeEvent(144, 9, key, 100, i));
+                track.add(makeEvent(128, 9, key, 100, i + 1));
+            }
+        }
+        track.add(makeEvent(176, 1,127, 0, 16));
+    }
+
+    public MidiEvent makeEvent(int comd, int chan, int one, int two, int tick) {
+        MidiEvent event = null;
+        try {
+            ShortMessage shortMessage = new ShortMessage();
+            shortMessage.setMessage(comd, chan, one, two);
+            event = new MidiEvent(shortMessage, tick);
+        } catch (InvalidMidiDataException e) {
+            e.printStackTrace();
+        }
+        return event;
+    }
+
+
 
     public void go() {
         JPanel jPanel = new JPanel();
