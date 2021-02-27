@@ -20,6 +20,7 @@ public class BeatBox {
         "Hand Clap", "High Tom", "Hi Bongo", "Maracas", "Whistle", "Low Conga", "Cowbell", "Vibraslap",
         "Low-mid Tom", "High Agogo", "Open Hi Conga"};
     int[] instruments = {35, 42, 46, 38, 49, 39, 50, 60, 70, 72, 64, 56, 58, 47, 67, 63};
+    private boolean start = false;
 
     static MyDrawPanel myDrawPanel = new MyDrawPanel();
     JFrame jFrame = new JFrame("Музыкальный калейдоскоп");;
@@ -29,6 +30,18 @@ public class BeatBox {
     public static void main(String[] args) {
         BeatBox beatBox = new BeatBox();
         beatBox.buildGui();
+    }
+
+    public boolean isStarted() {
+        return  start;
+    }
+
+    public void startOn() {
+        start = true;
+    }
+
+    public void startOff() {
+        start = false;
     }
 
     public void buildGui() {
@@ -43,12 +56,14 @@ public class BeatBox {
 
         JButton start = new JButton("Start");
         start.addActionListener(listener -> {
+            startOn();
             buildTrackAndStart();
         });
         buttonBox.add(start);
 
         JButton stop = new JButton("Stop");
         stop.addActionListener(listener -> {
+            startOff();
             sequencer.stop();
         });
         buttonBox.add(stop);
@@ -82,6 +97,11 @@ public class BeatBox {
         for (int i = 0; i < 256; i++) {
             JCheckBox checkBox = new JCheckBox();
             checkBox.setSelected(false);
+                checkBox.addActionListener(listener -> {
+                    if (isStarted()) {
+                        buildTrackAndStart();
+                    }
+                });
             checkBoxList.add(checkBox);
             panel.add(checkBox);
         }
