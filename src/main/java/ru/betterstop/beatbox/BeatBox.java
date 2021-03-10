@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -54,31 +55,74 @@ public class BeatBox {
         checkBoxList = new ArrayList<JCheckBox>();
         Box buttonBox = new Box(BoxLayout.Y_AXIS);
 
-        JButton start = new JButton("Start");
+        JButton start = new JButton("Старт");
         start.addActionListener(listener -> {
-            startOn();
             buildTrackAndStart();
         });
         buttonBox.add(start);
 
-        JButton stop = new JButton("Stop");
+        JButton stop = new JButton("Стоп");
         stop.addActionListener(listener -> {
             startOff();
             sequencer.stop();
         });
         buttonBox.add(stop);
 
-        JButton upTempo = new JButton("Tempo Up");
+        JButton upTempo = new JButton("Быстрее");
         upTempo.addActionListener(listener -> {
-            System.out.println("upTempo");
+           float tempo = sequencer.getTempoFactor();
+           sequencer.setTempoFactor(tempo * 1.03f);
         });
         buttonBox.add(upTempo);
 
-        JButton downTempo = new JButton("Tempo Down");
+        JButton downTempo = new JButton("Медленнее");
         downTempo.addActionListener(listener -> {
-            System.out.println("downTempo");
+            float tempo = sequencer.getTempoFactor();
+            sequencer.setTempoFactor(tempo * 0.97f);
         });
         buttonBox.add(downTempo);
+
+        JButton saveButton = new JButton("Сохранить");
+        saveButton.addActionListener(listener -> {
+            JFileChooser file = new JFileChooser();
+            file.showSaveDialog(frame);
+            boolean[] checkBoxState = new boolean[256];
+            for (int i = 0; i < 256; i++) {
+                if (checkBoxList.get(i).isSelected()) {
+                    checkBoxState[i] = true;
+                }
+            }
+            try(ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file.getSelectedFile()))) {
+                os.writeObject(checkBoxState);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        buttonBox.add(saveButton);
+
+        JButton loadButton = new JButton("Загрузить");
+        loadButton.addActionListener(listener -> {
+            JFileChooser file = new JFileChooser();
+            file.showOpenDialog(frame);
+
+            boolean[] checkBoxState = null;
+            try (ObjectInputStream os = new ObjectInputStream(new FileInputStream(file.getSelectedFile()))){
+                checkBoxState = (boolean[]) os.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (checkBoxState != null) {
+                for (int i = 0; i < 256; i++) {
+                    //assert checkBoxState != null;
+                    checkBoxList.get(i).setSelected(checkBoxState[i]);
+                }
+            } else {
+                System.out.println("Ошибка загрузки");
+            }
+            sequencer.stop();
+            buildTrackAndStart();
+        });
+        buttonBox.add(loadButton);
 
         Box nameBox = new Box(BoxLayout.Y_AXIS);
         Arrays.stream(instrumentNames).forEach(instName -> nameBox.add(new Label(instName)));
@@ -149,6 +193,7 @@ public class BeatBox {
             sequencer.start();
             sequencer.setTempoInBPM(120);
         } catch(Exception e) {e.printStackTrace();}
+        startOn();
     }
 
     public void makeTracks(int[] list) {
@@ -174,71 +219,4 @@ public class BeatBox {
         return event;
     }
 
-
-
-    public void go() {
-        JPanel jPanel = new JPanel();
-
-        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jFrame.setSize(640, 480);
-
-        JButton buttonColor = new JButton("Change colors");
-        buttonColor.addActionListener(new BeatBox.ColorListener());
-        jPanel.add(BorderLayout.SOUTH, buttonColor);
-
-        JButton buttonBeep = new JButton("Beep");
-        buttonBeep.addActionListener(new BeatBox.BeepListener());
-        jPanel.add(BorderLayout.EAST, buttonBeep);
-
-        JTextArea fielCopy = new JTextArea(10, 28);
-        JScrollPane scrollPane = new JScrollPane(fielCopy);
-        fielCopy.setLineWrap(true);
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        JTextField field = new JTextField(21);
-
-        field.addActionListener(action ->  {
-                fielCopy.append(field.getText() + "\n");
-                field.setText("");
-        });
-        JCheckBox checkBox = new JCheckBox("Выделить");
-        checkBox.addActionListener(action -> {
-            if (checkBox.isSelected()) {
-                fielCopy.requestFocus();
-                fielCopy.selectAll();
-            } else field.requestFocus();
-        });
-
-
-
-        jPanel.setBackground(Color.DARK_GRAY);
-        jFrame.getContentPane().add(BorderLayout.EAST, jPanel);
-
-        JPanel drawPanel = new JPanel();
-        drawPanel.setBackground(Color.GRAY);
-        drawPanel.add(field);
-        drawPanel.add(checkBox);
-        drawPanel.add(scrollPane);
-        jFrame.getContentPane().add(BorderLayout.CENTER, drawPanel);
-
-        jFrame.setVisible(true);
-    }
-
-    static class ColorListener implements ActionListener{
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int red = (int) (Math.random() * 255);
-            int green = (int) (Math.random() * 255);
-            int blue = (int) (Math.random() * 255);
-            colorOval = new Color(red, green, blue);
-        }
-    }
-
-    static class BeepListener implements ActionListener{
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            MidiPlayer.play();
-        }
-    }
 }
