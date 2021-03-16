@@ -20,7 +20,7 @@ public class MidiPlayer{
             sequencer.open();
 
             int[] eventsIWant = {127};
-            sequencer.addControllerEventListener(BeatBox.myDrawPanel, eventsIWant);
+          //  sequencer.addControllerEventListener(BeatBox.myDrawPanel, eventsIWant);
 
             Sequence sequence = new Sequence(Sequence.PPQ, 4);
             Track track = sequence.createTrack();

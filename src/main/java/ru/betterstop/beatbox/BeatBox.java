@@ -2,6 +2,7 @@ package ru.betterstop.beatbox;
 
 import javax.sound.midi.*;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,11 +23,6 @@ public class BeatBox {
         "Low-mid Tom", "High Agogo", "Open Hi Conga"};
     int[] instruments = {35, 42, 46, 38, 49, 39, 50, 60, 70, 72, 64, 56, 58, 47, 67, 63};
     private boolean start = false;
-
-    static MyDrawPanel myDrawPanel = new MyDrawPanel();
-    JFrame jFrame = new JFrame("Музыкальный калейдоскоп");;
-    static Color colorOval = Color.BLACK;
-
 
     public static void main(String[] args) {
         BeatBox beatBox = new BeatBox();
@@ -85,6 +81,8 @@ public class BeatBox {
         JButton saveButton = new JButton("Сохранить");
         saveButton.addActionListener(listener -> {
             JFileChooser file = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("BitBox трек (*.bbx)", "bbx");
+            file.setFileFilter(filter);
             file.showSaveDialog(frame);
             boolean[] checkBoxState = new boolean[256];
             for (int i = 0; i < 256; i++) {
@@ -103,8 +101,9 @@ public class BeatBox {
         JButton loadButton = new JButton("Загрузить");
         loadButton.addActionListener(listener -> {
             JFileChooser file = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("BitBox трек (*.bbx)", "bbx");
+            file.setFileFilter(filter);
             file.showOpenDialog(frame);
-
             boolean[] checkBoxState = null;
             try (ObjectInputStream os = new ObjectInputStream(new FileInputStream(file.getSelectedFile()))){
                 checkBoxState = (boolean[]) os.readObject();
